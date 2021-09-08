@@ -65,7 +65,7 @@ class SDEContainerViewController: UIViewController{
             buttonTitles.append(title)
             //适应屏幕旋转的最简单的办法，在转场开始前设置子 view 的尺寸为容器视图的尺寸。
             childVC.view.translatesAutoresizingMaskIntoConstraints = true
-            childVC.view.autoresizingMask = [UIViewAutoresizing.flexibleWidth, UIViewAutoresizing.flexibleHeight]
+            childVC.view.autoresizingMask = [UIView.AutoresizingMask.flexibleWidth, UIView.AutoresizingMask.flexibleHeight]
         }
         
         NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: SDEContainerTransitionEndNotification), object: nil, queue: nil, using: { _ in
@@ -107,7 +107,7 @@ class SDEContainerViewController: UIViewController{
         rootView.addConstraint(NSLayoutConstraint(item: buttonTabBar, attribute: .centerX, relatedBy: .equal, toItem: privateContainerView, attribute: .centerX, multiplier: 1, constant: 0))
         rootView.addConstraint(NSLayoutConstraint(item: buttonTabBar, attribute: .centerY, relatedBy: .equal, toItem: privateContainerView, attribute: .centerY, multiplier: 0.2, constant: 0))
         
-        addChildViewControllerButtons()
+        addChildButtons()
     }
     
     
@@ -135,16 +135,16 @@ class SDEContainerViewController: UIViewController{
         let fromButton = buttonTabBar.subviews[fromIndex] as! UIButton
         let toButton = buttonTabBar.subviews[toIndex] as! UIButton
         
-        fromButton.setTitleColor(UIColor(red: 1, green: percent, blue: percent, alpha: 1), for: UIControlState())
-        toButton.setTitleColor(UIColor(red: 1, green: 1 - percent, blue: 1 - percent, alpha: 1), for: UIControlState())
+        fromButton.setTitleColor(UIColor(red: 1, green: percent, blue: percent, alpha: 1), for: UIControl.State())
+        toButton.setTitleColor(UIColor(red: 1, green: 1 - percent, blue: 1 - percent, alpha: 1), for: UIControl.State())
     }
     
     //MARK: Private Helper Method
-    fileprivate func addChildViewControllerButtons(){
+    fileprivate func addChildButtons(){
         for (index, vcTitle) in buttonTitles.enumerated(){
             let button = UIButton(frame: CGRect(x: 0, y: 0, width: kButtonSlotWidth, height: kButtonSlotHeight))
             button.backgroundColor = UIColor.clear
-            button.setTitle(vcTitle, for: UIControlState())
+            button.setTitle(vcTitle, for: UIControl.State())
             button.translatesAutoresizingMaskIntoConstraints = false
             button.addTarget(self, action: #selector(SDEContainerViewController.TabButtonTapped(_:)), for: .touchUpInside)
             
@@ -165,9 +165,9 @@ class SDEContainerViewController: UIViewController{
         for (index, subView) in buttonTabBar.subviews.enumerated(){
             let button = subView as! UIButton
             if index != selectedIndex{
-                button.setTitleColor(UIColor.white, for: UIControlState())
+                button.setTitleColor(UIColor.white, for: UIControl.State())
             }else{
-                button.setTitleColor(UIColor.red, for: UIControlState())
+                button.setTitleColor(UIColor.red, for: UIControl.State())
             }
         }
     }
@@ -179,9 +179,9 @@ class SDEContainerViewController: UIViewController{
         //called when init
         if fromIndex == NSNotFound{
             let selectedVC = viewControllers![toIndex]
-            addChildViewController(selectedVC)
+            addChild(selectedVC)
             privateContainerView.addSubview(selectedVC.view)
-            selectedVC.didMove(toParentViewController: self)
+            selectedVC.didMove(toParent: self)
             changeTabButtonAppearAtIndex(toIndex)
             return
         }
@@ -203,14 +203,14 @@ class SDEContainerViewController: UIViewController{
         }else{
             //Transition Without Animation
             let priorSelectedVC = viewControllers![fromIndex]
-            priorSelectedVC.willMove(toParentViewController: nil)
+            priorSelectedVC.willMove(toParent: nil)
             priorSelectedVC.view.removeFromSuperview()
-            priorSelectedVC.removeFromParentViewController()
+            priorSelectedVC.removeFromParent()
             
             let newSelectedVC = viewControllers![toIndex]
-            addChildViewController(newSelectedVC)
+            addChild(newSelectedVC)
             privateContainerView.addSubview(newSelectedVC.view)
-            newSelectedVC.didMove(toParentViewController: self)
+            newSelectedVC.didMove(toParent: self)
             
             changeTabButtonAppearAtIndex(toIndex)
         }

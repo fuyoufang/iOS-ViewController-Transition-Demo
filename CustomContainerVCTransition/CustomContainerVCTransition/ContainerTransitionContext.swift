@@ -55,17 +55,17 @@ class ContainerTransitionContext: NSObject, UIViewControllerContextTransitioning
     //MARK: Protocol Method - Reporting the Transition Progress
     func completeTransition(_ didComplete: Bool) {
         if didComplete{
-            privateToViewController.didMove(toParentViewController: privateContainerViewController)
+            privateToViewController.didMove(toParent: privateContainerViewController)
             
-            privateFromViewController.willMove(toParentViewController: nil)
+            privateFromViewController.willMove(toParent: nil)
             privateFromViewController.view.removeFromSuperview()
-            privateFromViewController.removeFromParentViewController()
+            privateFromViewController.removeFromParent()
         }else{
-            privateToViewController.didMove(toParentViewController: privateContainerViewController)
+            privateToViewController.didMove(toParent: privateContainerViewController)
             
-            privateToViewController.willMove(toParentViewController: nil)
+            privateToViewController.willMove(toParent: nil)
             privateToViewController.view.removeFromSuperview()
-            privateToViewController.removeFromParentViewController()
+            privateToViewController.removeFromParent()
         }
         
         transitionEnd()
@@ -89,7 +89,7 @@ class ContainerTransitionContext: NSObject, UIViewControllerContextTransitioning
         privateContainerView.layer.beginTime = timeSincePause
         
         let displayLink = CADisplayLink(target: self, selector: #selector(ContainerTransitionContext.finishChangeButtonAppear(_:)))
-        displayLink.add(to: RunLoop.main, forMode: RunLoopMode.defaultRunLoopMode)
+        displayLink.add(to: RunLoop.main, forMode: RunLoop.Mode.default)
         
         //当 SDETabBarViewController 作为一个子 VC 内嵌在其他容器 VC 内，比如 NavigationController 里时，在 SDETabBarViewController 内完成一次交互转场后
         //在外层的 NavigationController push 其他 VC 然后 pop 返回时，且仅限于交互控制，会出现 containerView 不见的情况，pop 完成后就恢复了。
@@ -104,7 +104,7 @@ class ContainerTransitionContext: NSObject, UIViewControllerContextTransitioning
         isInteractive = false
         isCancelled = true
         let displayLink = CADisplayLink(target: self, selector: #selector(ContainerTransitionContext.reverseCurrentAnimation(_:)))
-        displayLink.add(to: RunLoop.main, forMode: RunLoopMode.defaultRunLoopMode)
+        displayLink.add(to: RunLoop.main, forMode: RunLoop.Mode.default)
         NotificationCenter.default.post(name: Notification.Name(rawValue: SDEInteractionEndNotification), object: self)
     }
 
@@ -182,7 +182,7 @@ class ContainerTransitionContext: NSObject, UIViewControllerContextTransitioning
     func activateInteractiveTransition(){
         isInteractive = true
         isCancelled = false
-        privateContainerViewController.addChildViewController(privateToViewController)
+        privateContainerViewController.addChild(privateToViewController)
         privateContainerView.layer.speed = 0
         animationController?.animateTransition(using: self)
     }
@@ -191,7 +191,7 @@ class ContainerTransitionContext: NSObject, UIViewControllerContextTransitioning
     fileprivate func activateNonInteractiveTransition(){
         isInteractive = false
         isCancelled = false
-        privateContainerViewController.addChildViewController(privateToViewController)
+        privateContainerViewController.addChild(privateToViewController)
         animationController?.animateTransition(using: self)
     }
     

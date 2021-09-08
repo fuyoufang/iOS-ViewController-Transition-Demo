@@ -30,7 +30,7 @@ class SDETabBarViewController: SDEContainerViewController {
         view.addGestureRecognizer(pangesture)
     }
     
-    func handlePan(_ gesture: UIPanGestureRecognizer){
+    @objc func handlePan(_ gesture: UIPanGestureRecognizer){
         if viewControllers == nil || viewControllers?.count < 2 || containerTransitionDelegate == nil || !(containerTransitionDelegate is SDEContainerViewControllerDelegate) {
             return
         }
