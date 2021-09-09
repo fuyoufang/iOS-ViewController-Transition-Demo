@@ -8,7 +8,7 @@
 
 import UIKit
 
-enum SDETransitionType{
+enum SDETransitionType {
     case navigationTransition(UINavigationController.Operation)
     case tabTransition(TabOperationDirection)
     case modalTransition(ModalOperation)
@@ -36,19 +36,20 @@ class SlideAnimationController: NSObject, UIViewControllerAnimatedTransitioning 
     }
 
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
-        let containerView = transitionContext.containerView
-        guard let fromVC = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.from), let toVC = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.to) else{
+        
+        guard let fromVC = transitionContext.viewController(forKey: .from),
+              let toVC = transitionContext.viewController(forKey: .to) else {
             return  
         }
         
         let fromView = fromVC.view
         let toView = toVC.view
-        
+        let containerView = transitionContext.containerView
         var translation = containerView.frame.width
         var toViewTransform = CGAffineTransform.identity
         var fromViewTransform = CGAffineTransform.identity
         
-        switch transitionType{
+        switch transitionType {
         case .navigationTransition(let operation):
             translation = operation == .push ? translation : -translation
             toViewTransform = CGAffineTransform(translationX: translation, y: 0)

@@ -156,29 +156,32 @@ class SDEContainerViewController: UIViewController{
     
     @objc
     fileprivate func TabButtonTapped(_ button: UIButton){
-        if let tappedIndex = buttonTabBar.subviews.index(of: button), tappedIndex != selectedIndex{
+        if let tappedIndex = buttonTabBar.subviews.firstIndex(of: button), tappedIndex != selectedIndex{
             selectedIndex = tappedIndex
         }
     }
     
     fileprivate func changeTabButtonAppearAtIndex(_ selectedIndex: Int){
-        for (index, subView) in buttonTabBar.subviews.enumerated(){
+        for (index, subView) in buttonTabBar.subviews.enumerated() {
             let button = subView as! UIButton
             if index != selectedIndex{
-                button.setTitleColor(UIColor.white, for: UIControl.State())
-            }else{
-                button.setTitleColor(UIColor.red, for: UIControl.State())
+                button.setTitleColor(UIColor.white, for: .normal)
+            } else {
+                button.setTitleColor(UIColor.red, for: .normal)
             }
         }
     }
     
     fileprivate func transitionViewControllerFromIndex(_ fromIndex: Int, toIndex: Int){
-        if viewControllers == nil || fromIndex == toIndex || fromIndex < 0 || toIndex < 0 || toIndex >= viewControllers!.count || (fromIndex >= viewControllers!.count && fromIndex != NSNotFound){
+        guard let viewControllers = self.viewControllers,
+              fromIndex != toIndex, fromIndex > 0, toIndex > 0, toIndex < viewControllers.count,
+              (fromIndex < viewControllers.count || fromIndex == NSNotFound) else {
             return
         }
+        
         //called when init
         if fromIndex == NSNotFound{
-            let selectedVC = viewControllers![toIndex]
+            let selectedVC = viewControllers[toIndex]
             addChild(selectedVC)
             privateContainerView.addSubview(selectedVC.view)
             selectedVC.didMove(toParent: self)
@@ -186,28 +189,33 @@ class SDEContainerViewController: UIViewController{
             return
         }
         
-        if containerTransitionDelegate != nil{
+        if containerTransitionDelegate != nil {
             buttonTabBar.isUserInteractionEnabled = false
             
-            let fromVC = viewControllers![fromIndex]
-            let toVC = viewControllers![toIndex]
-            containerTransitionContext = ContainerTransitionContext(containerViewController: self, containerView: privateContainerView, fromViewController: fromVC, toViewController: toVC)
+            let fromVC = viewControllers[fromIndex]
+            let toVC = viewControllers[toIndex]
+            containerTransitionContext =
+                ContainerTransitionContext(containerViewController: self,
+                                           containerView: privateContainerView,
+                                           fromViewController: fromVC,
+                                           toViewController: toVC)
             
-            if interactive{
+            if interactive {
                 priorSelectedIndex = fromIndex
-                containerTransitionContext?.startInteractiveTranstionWith(containerTransitionDelegate!)
+                containerTransitionContext?
+                    .startInteractiveTranstionWith(containerTransitionDelegate!)
             }else{
                 containerTransitionContext?.startNonInteractiveTransitionWith(containerTransitionDelegate!)
                 changeTabButtonAppearAtIndex(toIndex)
             }
-        }else{
+        } else {
             //Transition Without Animation
-            let priorSelectedVC = viewControllers![fromIndex]
+            let priorSelectedVC = viewControllers[fromIndex]
             priorSelectedVC.willMove(toParent: nil)
             priorSelectedVC.view.removeFromSuperview()
             priorSelectedVC.removeFromParent()
             
-            let newSelectedVC = viewControllers![toIndex]
+            let newSelectedVC = viewControllers[toIndex]
             addChild(newSelectedVC)
             privateContainerView.addSubview(newSelectedVC.view)
             newSelectedVC.didMove(toParent: self)

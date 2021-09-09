@@ -11,6 +11,7 @@ import UIKit
 let SDEContainerTransitionEndNotification = "Notification.ContainerTransitionEnd.seedante"
 let SDEInteractionEndNotification = "Notification.InteractionEnd.seedante"
 
+
 class ContainerTransitionContext: NSObject, UIViewControllerContextTransitioning {
     //MARK: Protocol Method - Accessing the Transition Objects
     public var containerView: UIView {
@@ -18,10 +19,10 @@ class ContainerTransitionContext: NSObject, UIViewControllerContextTransitioning
     }
     
     public func viewController(forKey key: UITransitionContextViewControllerKey) -> UIViewController?{
-        switch key{
-        case UITransitionContextViewControllerKey.from:
+        switch key {
+        case .from:
             return privateFromViewController
-        case UITransitionContextViewControllerKey.to:
+        case .to:
             return privateToViewController
         default: return nil
         }
@@ -55,12 +56,14 @@ class ContainerTransitionContext: NSObject, UIViewControllerContextTransitioning
     //MARK: Protocol Method - Reporting the Transition Progress
     func completeTransition(_ didComplete: Bool) {
         if didComplete{
+            
             privateToViewController.didMove(toParent: privateContainerViewController)
             
             privateFromViewController.willMove(toParent: nil)
             privateFromViewController.view.removeFromSuperview()
             privateFromViewController.removeFromParent()
         }else{
+            #warning("todo 注意这里的 didMove(toParent:), 感觉没有必要")
             privateToViewController.didMove(toParent: privateContainerViewController)
             
             privateToViewController.willMove(toParent: nil)
@@ -146,13 +149,17 @@ class ContainerTransitionContext: NSObject, UIViewControllerContextTransitioning
     fileprivate var transitionPercent: CGFloat = 0
     
     //MARK: Public Custom Method
-    init(containerViewController: SDEContainerViewController, containerView: UIView, fromViewController fromVC: UIViewController, toViewController toVC: UIViewController){
+    init(containerViewController: SDEContainerViewController,
+         containerView: UIView,
+         fromViewController fromVC: UIViewController,
+         toViewController toVC: UIViewController) {
+        
         privateContainerViewController = containerViewController
         privateContainerView = containerView
         privateFromViewController = fromVC
         privateToViewController = toVC
-        fromIndex = containerViewController.viewControllers!.index(of: fromVC)!
-        toIndex = containerViewController.viewControllers!.index(of: toVC)!
+        fromIndex = containerViewController.viewControllers!.firstIndex(of: fromVC)!
+        toIndex = containerViewController.viewControllers!.firstIndex(of: toVC)!
         super.init()
         //每次转场开始前都会生成这个对象，调整 toView 的尺寸适用屏幕
         privateToViewController.view.frame = privateContainerView.bounds
@@ -196,9 +203,8 @@ class ContainerTransitionContext: NSObject, UIViewControllerContextTransitioning
     }
     
     fileprivate func transitionEnd(){
-        if animationController != nil && animationController!.responds(to: #selector(UIViewControllerAnimatedTransitioning.animationEnded(_:))) == true{
-            animationController!.animationEnded!(!isCancelled)
-        }
+        animationController?.animationEnded?(!isCancelled)
+        
         //If transition is cancelled, recovery data.
         if isCancelled{
             privateContainerViewController.restoreSelectedIndex()
@@ -248,8 +254,4 @@ class ContainerTransitionContext: NSObject, UIViewControllerContextTransitioning
             displayLink.invalidate()
         }
     }
-    
-    
-    
-    
 }
