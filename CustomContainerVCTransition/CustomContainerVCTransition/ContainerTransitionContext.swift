@@ -11,6 +11,9 @@ import UIKit
 let SDEContainerTransitionEndNotification = "Notification.ContainerTransitionEnd.seedante"
 let SDEInteractionEndNotification = "Notification.InteractionEnd.seedante"
 
+//extension NSNotification.Name {
+//    static let SDEContainerTransitionEnd = Notification.Name("Notification.ContainerTransitionEnd.seedante")
+//}
 
 class ContainerTransitionContext: NSObject, UIViewControllerContextTransitioning {
     //MARK: Protocol Method - Accessing the Transition Objects
@@ -91,7 +94,7 @@ class ContainerTransitionContext: NSObject, UIViewControllerContextTransitioning
         let timeSincePause = privateContainerView.layer.convertTime(CACurrentMediaTime(), from: nil) - pausedTime
         privateContainerView.layer.beginTime = timeSincePause
         
-        let displayLink = CADisplayLink(target: self, selector: #selector(ContainerTransitionContext.finishChangeButtonAppear(_:)))
+        let displayLink = CADisplayLink(target: self, selector: #selector(finishChangeButtonAppear(_:)))
         displayLink.add(to: RunLoop.main, forMode: RunLoop.Mode.default)
         
         //当 SDETabBarViewController 作为一个子 VC 内嵌在其他容器 VC 内，比如 NavigationController 里时，在 SDETabBarViewController 内完成一次交互转场后
@@ -99,14 +102,14 @@ class ContainerTransitionContext: NSObject, UIViewControllerContextTransitioning
         //根源在于此时 beginTime 被修改了，在转场结束后恢复为 0 就可以了。解决灵感来自于如果没有一次完成了交互转场而全部是中途取消的话就不会出现这个 Bug。
         //感谢简书用户@dasehng__ 反馈这个 Bug。
         let remainingTime = CFTimeInterval(1 - transitionPercent) * transitionDuration
-        perform(#selector(ContainerTransitionContext.fixBeginTimeBug), with: nil, afterDelay: remainingTime)
+        perform(#selector(fixBeginTimeBug), with: nil, afterDelay: remainingTime)
         
     }
     
     func cancelInteractiveTransition() {
         isInteractive = false
         isCancelled = true
-        let displayLink = CADisplayLink(target: self, selector: #selector(ContainerTransitionContext.reverseCurrentAnimation(_:)))
+        let displayLink = CADisplayLink(target: self, selector: #selector(reverseCurrentAnimation(_:)))
         displayLink.add(to: RunLoop.main, forMode: RunLoop.Mode.default)
         NotificationCenter.default.post(name: Notification.Name(rawValue: SDEInteractionEndNotification), object: self)
     }
@@ -129,11 +132,13 @@ class ContainerTransitionContext: NSObject, UIViewControllerContextTransitioning
     
     //MARK: Addtive Property
     fileprivate var animationController: UIViewControllerAnimatedTransitioning?
+    
     //MARK: Private Property for Protocol Need
     unowned fileprivate var privateFromViewController: UIViewController
     unowned fileprivate var privateToViewController: UIViewController
     unowned fileprivate var privateContainerViewController: SDEContainerViewController
     unowned fileprivate var privateContainerView: UIView
+    
     //MARK: Property for Transition State
     public var isAnimated: Bool{
         if animationController != nil{
@@ -165,10 +170,11 @@ class ContainerTransitionContext: NSObject, UIViewControllerContextTransitioning
         privateToViewController.view.frame = privateContainerView.bounds
     }
     
-    func startInteractiveTranstionWith(_ delegate: ContainerViewControllerDelegate){
+    func startInteractiveTranstionWith(_ delegate: ContainerViewControllerDelegate) {
+        
         animationController = delegate.containerController(privateContainerViewController, animationControllerForTransitionFromViewController: privateFromViewController, toViewController: privateToViewController)
         transitionDuration = animationController!.transitionDuration(using: self)
-        if privateContainerViewController.interactive == true{
+        if privateContainerViewController.interactive {
             if let interactionController = delegate.containerController?(privateContainerViewController, interactionControllerForAnimation: animationController!){
                 interactionController.startInteractiveTransition(self)
             }else{
@@ -202,16 +208,18 @@ class ContainerTransitionContext: NSObject, UIViewControllerContextTransitioning
         animationController?.animateTransition(using: self)
     }
     
-    fileprivate func transitionEnd(){
+    fileprivate func transitionEnd() {
         animationController?.animationEnded?(!isCancelled)
         
         //If transition is cancelled, recovery data.
-        if isCancelled{
+        if isCancelled {
             privateContainerViewController.restoreSelectedIndex()
             isCancelled = false
         }
         
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: SDEContainerTransitionEndNotification), object: self)
+        NotificationCenter.default.post(name:
+                                            NSNotification.Name(rawValue: SDEContainerTransitionEndNotification),
+                                        object: self)
     }
     
     //修复内嵌在其他容器 VC 交互返回的转场中 containerView 消失并且的转场结束后自动恢复的 Bug。
@@ -220,7 +228,7 @@ class ContainerTransitionContext: NSObject, UIViewControllerContextTransitioning
     }
 
     
-    @objc fileprivate func reverseCurrentAnimation(_ displayLink: CADisplayLink){
+    @objc fileprivate func reverseCurrentAnimation(_ displayLink: CADisplayLink) {
         let timeOffset = privateContainerView.layer.timeOffset - displayLink.duration
         if timeOffset > 0{
             privateContainerView.layer.timeOffset = timeOffset
@@ -244,7 +252,7 @@ class ContainerTransitionContext: NSObject, UIViewControllerContextTransitioning
         fakeView.removeFromSuperview()
     }
     
-    @objc fileprivate func finishChangeButtonAppear(_ displayLink: CADisplayLink){
+    @objc fileprivate func finishChangeButtonAppear(_ displayLink: CADisplayLink) {
         let percentFrame = 1 / (transitionDuration * 60)
         transitionPercent += CGFloat(percentFrame)
         if transitionPercent < 1.0{

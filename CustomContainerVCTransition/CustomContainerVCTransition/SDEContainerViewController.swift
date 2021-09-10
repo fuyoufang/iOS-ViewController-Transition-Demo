@@ -135,8 +135,10 @@ class SDEContainerViewController: UIViewController{
         let fromButton = buttonTabBar.subviews[fromIndex] as! UIButton
         let toButton = buttonTabBar.subviews[toIndex] as! UIButton
         
-        fromButton.setTitleColor(UIColor(red: 1, green: percent, blue: percent, alpha: 1), for: UIControl.State())
-        toButton.setTitleColor(UIColor(red: 1, green: 1 - percent, blue: 1 - percent, alpha: 1), for: UIControl.State())
+        fromButton.setTitleColor(UIColor(red: 1, green: percent, blue: percent, alpha: 1),
+                                 for: .normal)
+        toButton.setTitleColor(UIColor(red: 1, green: 1 - percent, blue: 1 - percent, alpha: 1),
+                               for: .normal)
     }
     
     //MARK: Private Helper Method
