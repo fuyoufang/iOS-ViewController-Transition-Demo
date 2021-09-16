@@ -9,7 +9,7 @@
 import UIKit
 
 enum SDETransitionType{
-    case navigationTransition(UINavigationControllerOperation)
+    case navigationTransition(UINavigationController.Operation)
     case tabTransition(TabOperationDirection)
     case modalTransition(ModalOperation)
 }
@@ -69,7 +69,8 @@ class SlideAnimationController: NSObject, UIViewControllerAnimatedTransitioning 
             case .presentation: containerView.addSubview(toView!)
             case .dismissal: break
             }
-        default: containerView.addSubview(toView!)
+        default:
+            containerView.addSubview(toView!)
         }
         
         toView?.transform = toViewTransform

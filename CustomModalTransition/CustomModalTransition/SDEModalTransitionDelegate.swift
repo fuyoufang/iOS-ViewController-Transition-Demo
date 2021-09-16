@@ -25,6 +25,12 @@ class SDEModalTransitionDelegate: NSObject, UIViewControllerTransitioningDelegat
     }
     
     func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
-        return OverlayPresentationController(presentedViewController: presented, presenting: presenting)
+        let o = OverlayPresentationController(presentedViewController: presented, presenting: presenting)
+//        o.tap = { [weak presented] in
+//            presented?
+//                .dismiss(animated: true, completion: nil)
+////            presented?.dismiss(animated: true, completion: nil)
+//        }
+        return o
     }
 }

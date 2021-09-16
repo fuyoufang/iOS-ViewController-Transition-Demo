@@ -80,7 +80,10 @@ class ContainerTransitionContext: NSObject, UIViewControllerContextTransitioning
     func updateInteractiveTransition(_ percentComplete: CGFloat) {
         if animationController != nil && isInteractive == true{
             transitionPercent = percentComplete
+            // 进度变化：
+            // 1. 通过修改 timeOffset，达到控制动画进度
             privateContainerView.layer.timeOffset = CFTimeInterval(percentComplete) * transitionDuration
+            // 2. 控制 tabbar 的选中
             privateContainerViewController.graduallyChangeTabButtonAppearWith(fromIndex, toIndex: toIndex, percent: percentComplete)
         }
     }
