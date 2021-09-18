@@ -11,6 +11,12 @@ import UIKit
 class OverlayPresentationController: UIPresentationController {
     let dimmingView = UIView()
     
+    var tap: (() -> Void)?
+    
+    @objc func tapDimmingView() {
+        tap?()
+    }
+    
     override func presentationTransitionWillBegin() {
         containerView?.addSubview(dimmingView)
         
@@ -19,16 +25,20 @@ class OverlayPresentationController: UIPresentationController {
         dimmingView.center = containerView!.center
         dimmingView.bounds = CGRect(x: 0, y: 0, width: dimmingViewInitailWidth , height: dimmingViewInitailHeight)
         
-        _ = presentedViewController.transitionCoordinator?.animate(alongsideTransition: {
-            _ in
-            self.dimmingView.bounds = self.containerView!.bounds
+        dimmingView.isUserInteractionEnabled = true
+        let tap = UITapGestureRecognizer(target: self, action: #selector(tapDimmingView))
+        dimmingView.addGestureRecognizer(tap)
+        presentedViewController.transitionCoordinator?
+            .animate(alongsideTransition: { _ in
+                self.dimmingView.bounds = self.containerView!.bounds
             }, completion: nil)
     }
     
     override func dismissalTransitionWillBegin() {
-        _ = presentedViewController.transitionCoordinator?.animate(alongsideTransition: { _ in
+        presentedViewController.transitionCoordinator?
+            .animate(alongsideTransition: { _ in
             self.dimmingView.alpha = 0.0
-            }, completion: nil)
+        }, completion: nil)
     }
     
     override func containerViewWillLayoutSubviews(){
