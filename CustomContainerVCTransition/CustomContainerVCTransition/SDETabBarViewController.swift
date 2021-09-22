@@ -7,6 +7,7 @@
 //
 
 import UIKit
+
 // FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
 // Consider refactoring the code to use the non-optional operators.
 fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
@@ -26,35 +27,49 @@ class SDETabBarViewController: SDEContainerViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         //Configure Interactive Transiton
-        let pangesture = UIPanGestureRecognizer(target: self, action: #selector(SDETabBarViewController.handlePan(_:)))
+        let pangesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
         view.addGestureRecognizer(pangesture)
     }
     
+    var lastSelectedIndex: Int = NSNotFound
+    
     @objc func handlePan(_ gesture: UIPanGestureRecognizer){
-        if viewControllers == nil || viewControllers?.count < 2 || containerTransitionDelegate == nil || !(containerTransitionDelegate is SDEContainerViewControllerDelegate) {
+
+        guard let viewControllers = self.viewControllers,
+              viewControllers.count > 1,
+              let delegate = containerTransitionDelegate as? SDEContainerViewControllerDelegate else {
             return
         }
         
-        let delegate = containerTransitionDelegate as! SDEContainerViewControllerDelegate
-        
-        let translationX =  gesture.translation(in: view).x
+        let translationX = gesture.translation(in: view).x
         let translationAbs = translationX > 0 ? translationX : -translationX
         let progress = translationAbs / view.frame.width
         switch gesture.state{
         case .began:
             interactive = true
-            let velocityX = gesture.velocity(in: view).x
-            if velocityX < 0{
-                if selectedIndex < viewControllers!.count - 1{
-                    selectedIndex += 1
-                }
-            }else{
-                if selectedIndex > 0{
-                    selectedIndex -= 1
-                }
-            }
+            lastSelectedIndex = selectedIndex
+            
         case .changed:
-            delegate.interactionController.updateInteractiveTransition(progress)
+            /*
+             原来：
+             此处是使用的速度，而不是偏移量，并且放在了 begin 事件当中
+             */
+//            let velocityX = gesture.velocity(in: view).x
+            debugPrint(translationX)
+            if translationX < 0 {
+                if lastSelectedIndex < viewControllers.count - 1 {
+                    selectedIndex = lastSelectedIndex + 1
+                }
+                delegate.interactionController.updateInteractiveTransition(progress)
+            } else if translationX > 0  {
+                if lastSelectedIndex > 0{
+                    selectedIndex = lastSelectedIndex - 1
+                }
+                delegate.interactionController.updateInteractiveTransition(progress)
+            } else {
+                delegate.interactionController.cancelInteractiveTransition()
+            }
+            
         case .cancelled, .ended:
             interactive = false
             if progress > 0.6{

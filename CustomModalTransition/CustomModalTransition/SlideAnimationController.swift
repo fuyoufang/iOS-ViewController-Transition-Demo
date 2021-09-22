@@ -9,7 +9,7 @@
 import UIKit
 
 enum SDETransitionType{
-    case navigationTransition(UINavigationControllerOperation)
+    case navigationTransition(UINavigationController.Operation)
     case tabTransition(TabOperationDirection)
     case modalTransition(ModalOperation)
 }

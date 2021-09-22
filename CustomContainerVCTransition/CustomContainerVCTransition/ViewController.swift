@@ -28,8 +28,8 @@ class ViewController: UIViewController {
             view.addSubview(label)
             
             label.translatesAutoresizingMaskIntoConstraints = false
-            view.addConstraint(NSLayoutConstraint(item: view, attribute: .centerX, relatedBy: .equal, toItem: label, attribute: .centerX, multiplier: 1, constant: 0))
-            view.addConstraint(NSLayoutConstraint(item: view, attribute: .centerY, relatedBy: .equal, toItem: label, attribute: .centerY, multiplier: 1, constant: 0))
+            view.addConstraint(NSLayoutConstraint(item: self.view!, attribute: .centerX, relatedBy: .equal, toItem: label, attribute: .centerX, multiplier: 1, constant: 0))
+            view.addConstraint(NSLayoutConstraint(item: self.view!, attribute: .centerY, relatedBy: .equal, toItem: label, attribute: .centerY, multiplier: 1, constant: 0))
         }
         
     }

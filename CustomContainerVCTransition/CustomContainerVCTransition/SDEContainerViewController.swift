@@ -13,6 +13,7 @@ class SDEContainerViewController: UIViewController{
     fileprivate let kButtonSlotWidth: CGFloat = 64
     fileprivate let kButtonSlotHeight: CGFloat = 44
     fileprivate let privateContainerView = UIView()
+    
     let buttonTabBar = UIView()
     fileprivate var buttonTitles: [String] = []
     
@@ -20,6 +21,7 @@ class SDEContainerViewController: UIViewController{
     var interactive = false
     weak var containerTransitionDelegate: ContainerViewControllerDelegate?
     fileprivate var containerTransitionContext: ContainerTransitionContext?
+    
     //MARK: Property like UITabBarController
     //set viewControllers need more code and test, so keep this private in this demo.
     fileprivate(set) var viewControllers: [UIViewController]?

@@ -53,6 +53,7 @@ class OverlayAnimationController: NSObject, UIViewControllerAnimatedTransitionin
 
             }
         }
+        
         //Dismissal 转场中不要将 toView 添加到 containerView
         if fromVC.isBeingDismissed{
             let fromViewHeight = fromView?.frame.height
