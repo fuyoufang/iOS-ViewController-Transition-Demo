@@ -9,7 +9,7 @@
 import UIKit
 
 enum SDETransitionType{
-    case navigationTransition(UINavigationControllerOperation)
+    case navigationTransition(UINavigationController.Operation)
     case tabTransition(TabOperationDirection)
     case modalTransition(ModalOperation)
 }
@@ -37,7 +37,8 @@ class SlideAnimationController: NSObject, UIViewControllerAnimatedTransitioning 
 
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         let containerView = transitionContext.containerView
-        guard let fromVC = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.from), let toVC = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.to) else{
+        guard let fromVC = transitionContext.viewController(forKey: .from),
+              let toVC = transitionContext.viewController(forKey: .to) else{
             return  
         }
         
@@ -58,20 +59,30 @@ class SlideAnimationController: NSObject, UIViewControllerAnimatedTransitioning 
             fromViewTransform = CGAffineTransform(translationX: translation, y: 0)
             toViewTransform = CGAffineTransform(translationX: -translation, y: 0)
         case .modalTransition(let operation):
-            translation =  containerView.frame.height
+            translation = containerView.frame.height
             toViewTransform = CGAffineTransform(translationX: 0, y: (operation == .presentation ? translation : 0))
             fromViewTransform = CGAffineTransform(translationX: 0, y: (operation == .presentation ? 0 : translation))
         }
 
-        switch transitionType{
+        switch transitionType {
         case .modalTransition(let operation):
-            switch operation{
-            case .presentation: containerView.addSubview(toView!)
-            case .dismissal: break
+            switch operation {
+            case .presentation:
+                containerView.addSubview(toView!)
+            case .dismissal:
+                break
             }
-        default: containerView.addSubview(toView!)
+        default:
+            containerView.addSubview(toView!)
         }
         
+        // presentation
+        // 开始时
+        // - toView 的 transform 为 CGAffineTransform(translationX: 0, y: containerView.frame.height)
+        // - fromView 的 transform 为
+        // 动画时
+        // - toView 的 transform 为 CGAffineTransform.identity
+        // - fromView 的 transform 为 CGAffineTransform(translationX: 0, y: 0)
         toView?.transform = toViewTransform
         UIView.animate(withDuration: transitionDuration(using: transitionContext), animations: {
             fromView?.transform = fromViewTransform
