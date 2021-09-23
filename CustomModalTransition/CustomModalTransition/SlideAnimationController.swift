@@ -37,7 +37,8 @@ class SlideAnimationController: NSObject, UIViewControllerAnimatedTransitioning 
 
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         let containerView = transitionContext.containerView
-        guard let fromVC = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.from), let toVC = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.to) else{
+        guard let fromVC = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.from),
+              let toVC = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.to) else{
             return  
         }
         

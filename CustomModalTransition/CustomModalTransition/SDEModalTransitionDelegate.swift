@@ -17,12 +17,12 @@ class SDEModalTransitionDelegate: NSObject, UIViewControllerTransitioningDelegat
 //        return SlideAnimationController(type: transitionType)
     }
     
-    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return OverlayAnimationController()
-        //Or
-//        let transitionType = SDETransitionType.modalTransition(.dismissal)
-//        return SlideAnimationController(type: transitionType)
-    }
+//    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+//        return OverlayAnimationController()
+//        //Or
+////        let transitionType = SDETransitionType.modalTransition(.dismissal)
+////        return SlideAnimationController(type: transitionType)
+//    }
     
     func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
         let o = OverlayPresentationController(presentedViewController: presented, presenting: presenting)

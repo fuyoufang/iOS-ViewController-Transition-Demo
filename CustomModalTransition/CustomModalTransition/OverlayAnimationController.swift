@@ -37,6 +37,15 @@ extension OverlayAnimationController {
             let fromView = fromVC.view
             let toView = toVC.view
             
+            if let vc = fromVC as? PresentedViewController {
+                debugPrint("PresentedViewController fromVC:\(vc.index)")
+            }
+            
+            debugPrint(" fromVC type:\(type(of: fromVC))")
+            debugPrint(" toVC type:\(type(of: toVC))")
+            
+            
+            
             if toVC.isBeingPresented{
                 
                 /// -----------
@@ -98,7 +107,6 @@ extension OverlayAnimationController {
                     transitionContext.completeTransition(!isCancelled)
                 })
             }
-            
             
             
 //            if !toVC.isBeingPresented && !fromVC.isBeingDismissed  {
