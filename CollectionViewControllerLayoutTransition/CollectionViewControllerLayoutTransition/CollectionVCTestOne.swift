@@ -42,7 +42,7 @@ class CollectionVCTestOne: UICollectionViewController {
         return cell
     }
     
-    //MARK: UICollectionViewDelegate
+    // MARK: UICollectionViewDelegate
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         //根据点击 cell 的位置来决定下一级的 CollectionView 的布局
         let layout = UICollectionViewFlowLayout()
@@ -51,6 +51,5 @@ class CollectionVCTestOne: UICollectionViewController {
         let nextCVC = CollectionVCTestOne(collectionViewLayout: layout)
         nextCVC.useLayoutToLayoutNavigationTransitions = true
         navigationController?.pushViewController(nextCVC, animated: true)
-
     }
 }

@@ -22,3 +22,4 @@ class SDEModalTransitionDelegate: NSObject, UIViewControllerTransitioningDelegat
         return OverlayPresentationController(presentedViewController: presented, presenting: presenting)
     }
 }
+

@@ -8,13 +8,19 @@
 
 import UIKit
 
-class SDEContainerViewController: UIViewController{
+class SDEContainerViewController: UIViewController {
+    
+    struct Containt {
+        static let buttonSlotWidth: CGFloat = 64
+        static let buttonSlotHeight: CGFloat = 44
+    }
+    
     //MARK: Normal Property
-    fileprivate let kButtonSlotWidth: CGFloat = 64
-    fileprivate let kButtonSlotHeight: CGFloat = 44
+ 
     fileprivate let privateContainerView = UIView()
     
     let buttonTabBar = UIView()
+    
     fileprivate var buttonTitles: [String] = []
     
     //MARK: Property for Transition
@@ -26,33 +32,37 @@ class SDEContainerViewController: UIViewController{
     //set viewControllers need more code and test, so keep this private in this demo.
     fileprivate(set) var viewControllers: [UIViewController]?
     fileprivate var shouldReserve = false
+    
     fileprivate var priorSelectedIndex: Int = NSNotFound
-    var selectedIndex: Int = NSNotFound{
+    
+    var selectedIndex: Int = NSNotFound {
         willSet{
-            if shouldReserve{
+            if shouldReserve {
                 shouldReserve = false
-            }else{
+            } else {
                 transitionViewControllerFromIndex(selectedIndex, toIndex: newValue)
             }
         }
     }
     
-    var selectedViewController: UIViewController?{
-        get{
+    var selectedViewController: UIViewController? {
+        get {
             if self.viewControllers == nil || selectedIndex < 0 || selectedIndex >= viewControllers!.count{
                 return nil
             }
             return self.viewControllers![selectedIndex]
         }
-        set{
-            if viewControllers == nil{
+        set {
+            guard let viewControllers = self.viewControllers,
+                let selectedViewController = newValue else {
                 return
             }
-            if let index = viewControllers!.index(of: selectedViewController!){
-                selectedIndex = index
-            }else{
+            guard let index = viewControllers.firstIndex(of: selectedViewController) else {
                 print("The view controller is not in the viewControllers")
+                return
             }
+            
+            selectedIndex = index
         }
     }
     
@@ -104,8 +114,8 @@ class SDEContainerViewController: UIViewController{
         rootView.addSubview(buttonTabBar)
         
         let count = viewControllers != nil ? viewControllers!.count : 0
-        rootView.addConstraint(NSLayoutConstraint(item: buttonTabBar, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: CGFloat(count) * kButtonSlotWidth))
-        rootView.addConstraint(NSLayoutConstraint(item: buttonTabBar, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: kButtonSlotHeight))
+        rootView.addConstraint(NSLayoutConstraint(item: buttonTabBar, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: CGFloat(count) * Containt.buttonSlotWidth))
+        rootView.addConstraint(NSLayoutConstraint(item: buttonTabBar, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: Containt.buttonSlotHeight))
         rootView.addConstraint(NSLayoutConstraint(item: buttonTabBar, attribute: .centerX, relatedBy: .equal, toItem: privateContainerView, attribute: .centerX, multiplier: 1, constant: 0))
         rootView.addConstraint(NSLayoutConstraint(item: buttonTabBar, attribute: .centerY, relatedBy: .equal, toItem: privateContainerView, attribute: .centerY, multiplier: 0.2, constant: 0))
         
@@ -146,14 +156,14 @@ class SDEContainerViewController: UIViewController{
     //MARK: Private Helper Method
     fileprivate func addChildButtons(){
         for (index, vcTitle) in buttonTitles.enumerated(){
-            let button = UIButton(frame: CGRect(x: 0, y: 0, width: kButtonSlotWidth, height: kButtonSlotHeight))
+            let button = UIButton(frame: CGRect(x: 0, y: 0, width: Containt.buttonSlotWidth, height: Containt.buttonSlotHeight))
             button.backgroundColor = UIColor.clear
             button.setTitle(vcTitle, for: UIControl.State())
             button.translatesAutoresizingMaskIntoConstraints = false
             button.addTarget(self, action: #selector(SDEContainerViewController.TabButtonTapped(_:)), for: .touchUpInside)
             
             buttonTabBar.addSubview(button)
-            buttonTabBar.addConstraint(NSLayoutConstraint(item: button, attribute: .centerX, relatedBy: .equal, toItem: buttonTabBar, attribute: .leading, multiplier: 1, constant: (CGFloat(index) + 0.5) * kButtonSlotWidth))
+            buttonTabBar.addConstraint(NSLayoutConstraint(item: button, attribute: .centerX, relatedBy: .equal, toItem: buttonTabBar, attribute: .leading, multiplier: 1, constant: (CGFloat(index) + 0.5) * Containt.buttonSlotWidth))
             buttonTabBar.addConstraint(NSLayoutConstraint(item: button, attribute: .centerY, relatedBy: .equal, toItem: buttonTabBar, attribute: .centerY, multiplier: 1, constant: 0))
         }
     }
@@ -208,7 +218,7 @@ class SDEContainerViewController: UIViewController{
                 priorSelectedIndex = fromIndex
                 containerTransitionContext?
                     .startInteractiveTranstionWith(containerTransitionDelegate!)
-            }else{
+            } else {
                 containerTransitionContext?.startNonInteractiveTransitionWith(containerTransitionDelegate!)
                 changeTabButtonAppearAtIndex(toIndex)
             }

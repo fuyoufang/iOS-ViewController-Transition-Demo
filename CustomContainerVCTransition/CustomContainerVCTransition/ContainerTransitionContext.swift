@@ -65,7 +65,7 @@ class ContainerTransitionContext: NSObject, UIViewControllerContextTransitioning
             privateFromViewController.willMove(toParent: nil)
             privateFromViewController.view.removeFromSuperview()
             privateFromViewController.removeFromParent()
-        }else{
+        } else {
             #warning("todo 注意这里的 didMove(toParent:), 感觉没有必要")
             privateToViewController.didMove(toParent: privateContainerViewController)
             
@@ -177,10 +177,10 @@ class ContainerTransitionContext: NSObject, UIViewControllerContextTransitioning
         if privateContainerViewController.interactive {
             if let interactionController = delegate.containerController?(privateContainerViewController, interactionControllerForAnimation: animationController!){
                 interactionController.startInteractiveTransition(self)
-            }else{
+            } else {
                 fatalError("Need for interaction controller for interactive transition.")
             }
-        }else{
+        } else {
             fatalError("ContainerTransitionContext's Property 'interactive' must be true before starting interactive transiton")
         }
     }
@@ -234,7 +234,7 @@ class ContainerTransitionContext: NSObject, UIViewControllerContextTransitioning
             privateContainerView.layer.timeOffset = timeOffset
             transitionPercent = CGFloat(timeOffset / transitionDuration)
             privateContainerViewController.graduallyChangeTabButtonAppearWith(fromIndex, toIndex: toIndex, percent: transitionPercent)
-        }else{
+        } else {
             displayLink.invalidate()
             privateContainerView.layer.timeOffset = 0
             privateContainerView.layer.speed = 1
@@ -257,7 +257,7 @@ class ContainerTransitionContext: NSObject, UIViewControllerContextTransitioning
         transitionPercent += CGFloat(percentFrame)
         if transitionPercent < 1.0{
             privateContainerViewController.graduallyChangeTabButtonAppearWith(fromIndex, toIndex: toIndex, percent: transitionPercent)
-        }else{
+        } else {
             privateContainerViewController.graduallyChangeTabButtonAppearWith(fromIndex, toIndex: toIndex, percent: 1)
             displayLink.invalidate()
         }

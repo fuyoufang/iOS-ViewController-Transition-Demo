@@ -14,10 +14,6 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // UIControl.State() == UIControl.State.normal
-        //debugPrint(UIControl.State())
-        //debugPrint(UIControl.State.normal)
     }
     
     override func viewWillAppear(_ animated: Bool) {

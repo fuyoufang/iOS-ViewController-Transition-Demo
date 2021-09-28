@@ -9,7 +9,8 @@
 import UIKit
 
 /*
-通过单例的数据源来测试布局转场在修改数据源下的表现，测试表明，这很不稳定，建议不要这么做。在 storyboard 将类切换到 CollectionVCTestTwo 便可以测试这种情况
+ 通过单例的数据源来测试布局转场，在修改数据源下的表现，测试表明，这很不稳定，建议不要这么做。
+ 在 storyboard 将类切换到 CollectionVCTestTwo 便可以测试这种情况
 */
 class CollectionVCTestTwo: UICollectionViewController {
     
@@ -18,11 +19,6 @@ class CollectionVCTestTwo: UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.collectionView?.dataSource = dataSource
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -44,7 +40,7 @@ class CollectionVCTestTwo: UICollectionViewController {
     }
 }
 
-class CollectionViewDataSource:NSObject, UICollectionViewDataSource {
+class CollectionViewDataSource: NSObject, UICollectionViewDataSource {
 
     let reuseIdentifier = "Cell"
     static let sharedInstance = CollectionViewDataSource()

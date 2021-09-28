@@ -16,7 +16,7 @@ class SDEPercentDrivenInteractiveTransition: NSObject, UIViewControllerInteracti
         if let context = transitionContext as? ContainerTransitionContext{
             containerTransitionContext = context
             containerTransitionContext?.activateInteractiveTransition()
-        }else{
+        } else {
             fatalError("\(transitionContext) is not class or subclass of ContainerTransitionContext")
         }
     }

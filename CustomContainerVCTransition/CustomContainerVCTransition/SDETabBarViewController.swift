@@ -74,7 +74,7 @@ class SDETabBarViewController: SDEContainerViewController {
             interactive = false
             if progress > 0.6{
                 delegate.interactionController.finishInteractiveTransition()
-            }else{
+            } else {
                 delegate.interactionController.cancelInteractiveTransition()
             }
         default: break

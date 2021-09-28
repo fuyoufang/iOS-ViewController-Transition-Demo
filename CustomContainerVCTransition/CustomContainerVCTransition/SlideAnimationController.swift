@@ -59,6 +59,19 @@ class SlideAnimationController: NSObject, UIViewControllerAnimatedTransitioning 
             fromViewTransform = CGAffineTransform(translationX: translation, y: 0)
             toViewTransform = CGAffineTransform(translationX: -translation, y: 0)
         case .modalTransition(let operation):
+            /*
+             present 时，
+             直接将 toView 添加到了 containerView，没有设置 frame，toView 的 frame 应该被 UIKit 设置成了屏幕大小
+             
+             toViewTransform CGAffineTransform(translationX: 0, y: translation)
+             fromViewTransform CGAffineTransform(translationX: 0, y: 0)
+             
+             present 动画结束时，都设置了
+             fromView?.transform = CGAffineTransform.identity
+             toView?.transform = CGAffineTransform.identity
+             即不过转成是否取消，都设置成功了显示在屏幕中间
+             */
+            
             translation =  containerView.frame.height
             toViewTransform = CGAffineTransform(translationX: 0, y: (operation == .presentation ? translation : 0))
             fromViewTransform = CGAffineTransform(translationX: 0, y: (operation == .presentation ? 0 : translation))
@@ -66,11 +79,13 @@ class SlideAnimationController: NSObject, UIViewControllerAnimatedTransitioning 
 
         switch transitionType{
         case .modalTransition(let operation):
-            switch operation{
-            case .presentation: containerView.addSubview(toView!)
+            switch operation {
+            case .presentation:
+                containerView.addSubview(toView!)
             case .dismissal: break
             }
-        default: containerView.addSubview(toView!)
+        default:
+            containerView.addSubview(toView!)
         }
         
         toView?.transform = toViewTransform

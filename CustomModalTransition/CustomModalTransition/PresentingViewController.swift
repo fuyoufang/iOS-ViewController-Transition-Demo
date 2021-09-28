@@ -14,15 +14,9 @@ class PresentingViewController: UIViewController{
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        self.presentingViewController?.dismiss(animated: <#T##Bool#>, completion: <#T##(() -> Void)?##(() -> Void)?##() -> Void#>)
         
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
     /*
     .FullScreen 的时候，presentingView 的移除和添加由 UIKit 负责，在 presentation 转场结束后被移除，dismissal 转场结束时重新回到原来的位置；
     .Custom 的时候，presentingView 依然由 UIKit 负责，但 presentation 转场结束后不会被移除。

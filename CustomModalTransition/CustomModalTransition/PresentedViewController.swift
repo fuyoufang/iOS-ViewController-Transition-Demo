@@ -17,14 +17,8 @@ class PresentedViewController: UIViewController{
     override func viewDidLoad() {
         super.viewDidLoad()
         dismissButton.alpha = 0
-        // Do any additional setup after loading the view, typically from a nib.
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         let widthContraint = inputTextField.constraints.filter({constraint in
@@ -39,7 +33,7 @@ class PresentedViewController: UIViewController{
     }
     
     @IBAction func dismiss(_ sender: AnyObject) {
-        var applyTransform = CGAffineTransform( rotationAngle: 3 * CGFloat(M_PI))
+        var applyTransform = CGAffineTransform( rotationAngle: 3 * CGFloat(Double.pi))
         applyTransform = applyTransform.scaledBy(x: 0.1, y: 0.1)
 
         let widthContraint = inputTextField.constraints.filter({constraint in
